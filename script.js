@@ -74,3 +74,32 @@ function zeigeBildschirm(id) {
   });
 }
 
+// ===================== Sprache =====================
+function setzeSprache(neueSprache) {
+  sprache = neueSprache;
+  speichereEinstellung("sprache", neueSprache);
+  document.documentElement.lang = neueSprache;
+
+  document.querySelectorAll("[data-text]").forEach(function (element) {
+    element.textContent = t(element.dataset.text);
+  });
+  document.querySelectorAll("[data-platzhalter]").forEach(function (element) {
+    element.placeholder = t(element.dataset.platzhalter);
+  });
+  document.querySelectorAll("[data-sprache]").forEach(function (knopf) {
+    knopf.classList.toggle("aktiv", knopf.dataset.sprache === neueSprache);
+  });
+
+  aktualisiereTippKnopf();
+  if (aktuelles) zeigeTipp();
+  zeigeEndDetails();
+}
+
+function speichereEinstellung(schluessel, wert) {
+  try { localStorage.setItem("silhouette-" + schluessel, wert); } catch (fehler) {}
+}
+
+function ladeEinstellung(schluessel) {
+  try { return localStorage.getItem("silhouette-" + schluessel); } catch (fehler) { return null; }
+}
+
