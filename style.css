@@ -28,6 +28,8 @@ body {
   color: var(--text);
   font-family: var(--sans);
   font-weight: 300;
+  /* Zahlen in normaler Höhe, damit die 1 nicht wie ein I aussieht */
+  font-variant-numeric: lining-nums;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -295,7 +297,7 @@ input::placeholder {
   font-family: var(--serif);
   font-size: 1.9rem;
   font-weight: 500;
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 .wert.knapp strong {
