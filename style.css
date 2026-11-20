@@ -264,3 +264,151 @@ input::placeholder {
   border-color: var(--gold);
 }
 
+/* ===== Spielbildschirm ===== */
+.anzeige {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: var(--flaeche);
+  border: 1px solid var(--linie);
+  border-radius: 16px;
+}
+
+.wert {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 8px;
+}
+
+.wert + .wert {
+  border-left: 1px solid var(--linie);
+}
+
+.wert span {
+  font-size: 0.62rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gedaempft);
+}
+
+.wert strong {
+  font-family: var(--serif);
+  font-size: 1.9rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.wert.knapp strong {
+  color: var(--fehler);
+}
+
+.zeitbalken {
+  height: 2px;
+  margin: 14px 0 34px;
+  overflow: hidden;
+  background: var(--linie);
+  border-radius: 2px;
+}
+
+#zeitbalken-fuellung {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dunkel), var(--gold-hell));
+  transform-origin: left;
+}
+
+/* Die runde "Bühne" für das Pokémon */
+.buehne {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(290px, 74vw);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 38%, #f8f2e4, #e7d9b9 55%, #b99f6d);
+  box-shadow: 0 30px 80px -24px rgba(214, 182, 118, 0.45);
+}
+
+/* Feiner goldener Ring um die Bühne */
+.buehne::after {
+  content: "";
+  position: absolute;
+  inset: -12px;
+  border: 1px solid var(--linie);
+  border-radius: 50%;
+}
+
+/* Normalerweise schwarz (Silhouette) */
+#pokemon-bild {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  filter: brightness(0);
+}
+
+/* Noch kein Bild geladen → nichts anzeigen */
+#pokemon-bild:not([src]) {
+  visibility: hidden;
+}
+
+/* Aufgedeckt → Farbe langsam einblenden */
+#pokemon-bild.aufgedeckt {
+  filter: brightness(1) drop-shadow(0 12px 16px rgba(0, 0, 0, 0.25));
+  transition: filter 0.6s ease;
+}
+
+.meldung {
+  min-height: 1.6em;
+  margin: 30px 0 6px;
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  color: var(--gedaempft);
+}
+
+.meldung.erfolg {
+  color: var(--gold-hell);
+}
+
+.meldung.fehler {
+  color: var(--fehler);
+}
+
+.tipp-text {
+  min-height: 1.3em;
+  margin-bottom: 18px;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+}
+
+.rate-zeile {
+  display: flex;
+  gap: 10px;
+}
+
+.rate-zeile input {
+  flex: 1;
+  min-width: 0;
+}
+
+.neben-knoepfe,
+.knopf-reihe {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.neben-knoepfe .knopf,
+.knopf-reihe .knopf {
+  flex: 1;
+}
+
+.wackeln {
+  animation: wackeln 0.4s;
+}
+
+@keyframes wackeln {
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
