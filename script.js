@@ -168,3 +168,109 @@ function starteVorladen() {
   naechstes.catch(function () {}); // Fehler wird später behandelt
 }
 
+// ===================== Spielablauf =====================
+async function starteSpiel(neuerModus) {
+  if (neuerModus === "rangliste") {
+    const name = el.name.value.trim();
+    if (name === "") {
+      el.startFehler.textContent = t("nameFehlt");
+      el.name.focus();
+      return;
+    }
+    spielerName = name;
+    speichereEinstellung("name", name);
+  }
+  el.startFehler.textContent = "";
+
+  modus = neuerModus;
+  punkte = 0;
+  serie = 0;
+  besteSerie = 0;
+  anzahlRichtig = 0;
+  aktuelles = null;
+  gesehen.clear();
+  aktualisiereAnzeige();
+  el.zeit.textContent = SPIEL_DAUER;
+  el.zeitBalken.style.transform = "scaleX(1)";
+  el.zeitBox.classList.remove("knapp");
+  el.bild.removeAttribute("src");
+  el.tippText.textContent = "";
+  zeigeMeldung(t("laden"), "");
+  zeigeBildschirm("spiel");
+
+  spielLaeuft = true;
+  starteVorladen();
+  await naechsteRunde();
+  if (spielLaeuft) starteTimer(); // Uhr läuft erst, wenn das erste Bild da ist
+}
+
+async function naechsteRunde() {
+  gesperrt = true;
+
+  // Warten, bis das vorgeladene Pokémon da ist (bei Fehler neu versuchen)
+  while (spielLaeuft) {
+    try {
+      aktuelles = await naechstes;
+      break;
+    } catch (fehler) {
+      zeigeMeldung(t("verbindungFehler"), "fehler");
+      await warte(1500);
+      starteVorladen();
+    }
+  }
+  if (!spielLaeuft) return;
+  starteVorladen(); // schon das übernächste laden
+
+  tippStufe = 0;
+  el.bild.classList.remove("aufgedeckt");
+  el.bild.src = aktuelles.bild;
+  el.tippText.textContent = "";
+  el.tippFeld.value = "";
+  zeigeMeldung("", "");
+  aktualisiereTippKnopf();
+  gesperrt = false;
+  el.tippFeld.focus();
+}
+
+function pruefeTipp(event) {
+  event.preventDefault(); // Formular soll die Seite nicht neu laden
+  if (gesperrt) return;
+
+  const tipp = normalisiere(el.tippFeld.value);
+  if (tipp === "") return;
+
+  if (tipp === normalisiere(aktuelles.namen[sprache])) {
+    const bonus = Math.min(serie * SERIEN_BONUS, MAX_SERIEN_BONUS);
+    const gewonnen = PUNKTE_JE_TIPPS[tippStufe] + bonus;
+    punkte += gewonnen;
+    serie++;
+    anzahlRichtig++;
+    besteSerie = Math.max(besteSerie, serie);
+    aktualisiereAnzeige();
+    loeseAuf(t("richtig") + " · " + aktuelles.namen[sprache] + "  +" + gewonnen, "erfolg");
+  } else {
+    zeigeMeldung(t("falsch"), "fehler");
+    // Wackel-Animation neu starten
+    el.formular.classList.remove("wackeln");
+    void el.formular.offsetWidth;
+    el.formular.classList.add("wackeln");
+    el.tippFeld.select();
+  }
+}
+
+function ueberspringe() {
+  if (gesperrt) return;
+  serie = 0;
+  aktualisiereAnzeige();
+  loeseAuf(t("warEs") + " " + aktuelles.namen[sprache], "");
+}
+
+// Pokémon in Farbe zeigen, kurz warten, dann das nächste
+async function loeseAuf(text, art) {
+  gesperrt = true;
+  el.bild.classList.add("aufgedeckt");
+  zeigeMeldung(text, art);
+  await warte(PAUSE_NACH_RUNDE);
+  if (spielLaeuft) naechsteRunde();
+}
+
