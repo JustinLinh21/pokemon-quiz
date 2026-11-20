@@ -79,3 +79,83 @@ body {
   color: var(--grund);
 }
 
+/* ===== Bildschirme (nur einer ist sichtbar) ===== */
+.bildschirm {
+  display: none;
+  text-align: center;
+}
+
+.bildschirm.aktiv {
+  display: block;
+  animation: einblenden 0.5s ease;
+}
+
+@keyframes einblenden {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ===== Texte ===== */
+.ueberschrift-klein {
+  margin-bottom: 14px;
+  font-size: 0.7rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+h1, h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  line-height: 1.05;
+}
+
+h1 {
+  margin-bottom: 26px;
+  font-size: clamp(2.6rem, 10vw, 3.9rem);
+}
+
+h2 {
+  margin-bottom: 28px;
+  font-size: 2.5rem;
+}
+
+h3 {
+  margin: 36px 0 14px;
+  font: 500 0.7rem var(--sans);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.trenner {
+  width: 48px;
+  height: 1px;
+  margin: 0 auto 26px;
+  background: var(--gold);
+  opacity: 0.6;
+}
+
+.beschreibung {
+  max-width: 400px;
+  margin: 0 auto 36px;
+  line-height: 1.7;
+  color: var(--gedaempft);
+}
+
+.hinweis,
+.rangliste-info {
+  font-size: 0.78rem;
+  color: var(--gedaempft);
+}
+
+.rangliste-info {
+  margin-bottom: 28px;
+}
+
+.fehlertext {
+  min-height: 1.1em;
+  font-size: 0.82rem;
+  color: var(--fehler);
+}
+
