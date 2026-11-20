@@ -2,6 +2,8 @@
 
 Ein kleines Browser-Quiz: Ein zufälliges Pokémon erscheint als schwarze Silhouette und du musst seinen **deutschen Namen** erraten. Bei richtigem Tipp wird das Pokémon in Farbe angezeigt.
 
+▶️ **[Jetzt online spielen](https://justinlinh21.github.io/pokemon-quiz/)**
+
 ## Features
 
 - Zufälliges Pokémon aus der 1. Generation (Nr. 1–151)
