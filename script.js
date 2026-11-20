@@ -103,3 +103,68 @@ function ladeEinstellung(schluessel) {
   try { return localStorage.getItem("silhouette-" + schluessel); } catch (fehler) { return null; }
 }
 
+// ===================== Pokémon von der API laden =====================
+function zufallsId() {
+  if (gesehen.size >= ANZAHL_POKEMON - 1) gesehen.clear();
+  let id;
+  do {
+    id = Math.floor(Math.random() * ANZAHL_POKEMON) + 1;
+  } while (gesehen.has(id));
+  gesehen.add(id);
+  return id;
+}
+
+async function holePokemon(id) {
+  // Beide Anfragen gleichzeitig schicken, das ist schneller
+  const [pokemonAntwort, speziesAntwort] = await Promise.all([
+    fetch("https://pokeapi.co/api/v2/pokemon/" + id),
+    fetch("https://pokeapi.co/api/v2/pokemon-species/" + id)
+  ]);
+  if (!pokemonAntwort.ok || !speziesAntwort.ok) {
+    throw new Error("PokéAPI antwortet nicht richtig");
+  }
+
+  const daten = await pokemonAntwort.json();
+  const spezies = await speziesAntwort.json();
+
+  function nameIn(sprachCode) {
+    return spezies.names.find(function (e) { return e.language.name === sprachCode; }).name;
+  }
+
+  const bildAdresse = daten.sprites.other["official-artwork"].front_default;
+  await bildVorladen(bildAdresse);
+
+  return {
+    bild: bildAdresse,
+    namen: { de: nameIn("de"), en: nameIn("en") },
+    typen: daten.types.map(function (e) { return e.type.name; })
+  };
+}
+
+// Bild schon herunterladen, damit es sofort erscheint
+function bildVorladen(adresse) {
+  return new Promise(function (fertig) {
+    const bild = new Image();
+    bild.onload = fertig;
+    bild.onerror = fertig;
+    bild.src = adresse;
+  });
+}
+
+// Bis zu 3 Versuche, falls das Internet kurz hängt
+async function ladeNaechstes() {
+  for (let versuch = 1; versuch <= 3; versuch++) {
+    try {
+      return await holePokemon(zufallsId());
+    } catch (fehler) {
+      console.warn("Versuch " + versuch + " fehlgeschlagen", fehler);
+    }
+  }
+  throw new Error("Keine Verbindung zur PokéAPI");
+}
+
+function starteVorladen() {
+  naechstes = ladeNaechstes();
+  naechstes.catch(function () {}); // Fehler wird später behandelt
+}
+
