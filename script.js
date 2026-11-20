@@ -274,3 +274,36 @@ async function loeseAuf(text, art) {
   if (spielLaeuft) naechsteRunde();
 }
 
+// ===================== Tipps =====================
+function gibTipp() {
+  if (gesperrt || tippStufe >= 2) return;
+  tippStufe++;
+  zeigeTipp();
+  aktualisiereTippKnopf();
+  el.tippFeld.focus();
+}
+
+function zeigeTipp() {
+  const teile = [];
+  if (tippStufe >= 1) {
+    const typen = aktuelles.typen.map(function (typ) { return TYPEN[sprache][typ] || typ; });
+    teile.push(t("typ") + ": " + typen.join(" / "));
+  }
+  if (tippStufe >= 2) {
+    const name = aktuelles.namen[sprache];
+    teile.push(t("anfang") + ": " + name.charAt(0) + " _".repeat(name.length - 1));
+  }
+  el.tippText.textContent = teile.join("     ·     ");
+}
+
+function aktualisiereTippKnopf() {
+  if (tippStufe === 0) {
+    el.tippKnopf.textContent = t("tippTyp") + "  −" + (PUNKTE_JE_TIPPS[0] - PUNKTE_JE_TIPPS[1]);
+  } else if (tippStufe === 1) {
+    el.tippKnopf.textContent = t("tippAnfang") + "  −" + (PUNKTE_JE_TIPPS[1] - PUNKTE_JE_TIPPS[2]);
+  } else {
+    el.tippKnopf.textContent = t("tippLeer");
+  }
+  el.tippKnopf.disabled = tippStufe >= 2;
+}
+
