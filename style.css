@@ -159,3 +159,108 @@ h3 {
   color: var(--fehler);
 }
 
+/* ===== Karte, Eingabefelder, Knöpfe ===== */
+.karte {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 28px 24px;
+  text-align: left;
+  background: var(--flaeche);
+  border: 1px solid var(--linie);
+  border-radius: 20px;
+}
+
+label {
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gedaempft);
+}
+
+input {
+  width: 100%;
+  padding: 15px 16px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--linie);
+  border-radius: 12px;
+  color: var(--text);
+  font: 400 1rem var(--sans);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(214, 182, 118, 0.15);
+}
+
+input::placeholder {
+  color: #6d695f;
+}
+
+.knopf {
+  padding: 16px 22px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font: 500 0.78rem/1 var(--sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s, background 0.2s, border-color 0.2s, opacity 0.2s;
+}
+
+.knopf:active {
+  transform: scale(0.98);
+}
+
+.knopf.gold {
+  background: linear-gradient(135deg, var(--gold-hell), var(--gold) 50%, var(--gold-dunkel));
+  color: #1a1408;
+  box-shadow: 0 8px 24px -8px rgba(214, 182, 118, 0.5);
+}
+
+.knopf.gold:hover {
+  box-shadow: 0 10px 30px -6px rgba(214, 182, 118, 0.7);
+}
+
+.knopf.rand {
+  background: transparent;
+  border-color: var(--linie);
+  color: var(--gold-hell);
+}
+
+.knopf.rand:hover {
+  border-color: var(--gold);
+  background: rgba(214, 182, 118, 0.06);
+}
+
+.knopf.klein {
+  padding: 13px 14px;
+  font-size: 0.68rem;
+}
+
+.knopf:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.link {
+  margin-top: 30px;
+  padding: 0 0 4px;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  color: var(--gedaempft);
+  font: 400 0.76rem var(--sans);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.link:hover {
+  color: var(--gold-hell);
+  border-color: var(--gold);
+}
+
