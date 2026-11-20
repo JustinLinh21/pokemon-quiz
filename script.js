@@ -17,8 +17,17 @@ async function ladePokemon() {
   const antwort = await fetch("https://pokeapi.co/api/v2/pokemon/" + id);
   const daten = await antwort.json();
 
-  // Den richtigen Namen merken (aber noch NICHT anzeigen!)
-  richtigerName = daten.name;
+  // Zweiter API-Aufruf: Hier stehen die Namen in allen Sprachen
+  const speziesAntwort = await fetch("https://pokeapi.co/api/v2/pokemon-species/" + id);
+  const speziesDaten = await speziesAntwort.json();
+
+  // Den Eintrag mit der Sprache "de" (Deutsch) suchen
+  const deutsch = speziesDaten.names.find(function (eintrag) {
+    return eintrag.language.name === "de";
+  });
+
+  // Den deutschen Namen merken (aber noch NICHT anzeigen!)
+  richtigerName = deutsch.name.toLowerCase();
 
   // Bild anzeigen und wieder schwarz machen
   bild.src = daten.sprites.other["official-artwork"].front_default;
@@ -35,7 +44,9 @@ function pruefeTipp() {
   const tipp = tippFeld.value.toLowerCase().trim();
 
   if (tipp === richtigerName) {
-    ergebnis.textContent = "✅ Richtig! Es ist " + richtigerName + "!";
+    // Ersten Buchstaben gross schreiben: "glurak" → "Glurak"
+    const schoenerName = richtigerName.charAt(0).toUpperCase() + richtigerName.slice(1);
+    ergebnis.textContent = "✅ Richtig! Es ist " + schoenerName + "!";
     bild.classList.remove("silhouette"); // Farbe zeigen
   } else {
     ergebnis.textContent = "❌ Leider falsch, versuch's nochmal!";
