@@ -412,3 +412,81 @@ input::placeholder {
   40%, 80% { transform: translateX(6px); }
 }
 
+/* ===== Ende und Rangliste ===== */
+.end-punkte {
+  font-family: var(--serif);
+  font-size: clamp(4.2rem, 20vw, 6.2rem);
+  line-height: 1;
+  color: var(--gold-hell);
+}
+
+.end-einheit {
+  margin: 6px 0 18px;
+  font-size: 0.7rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gedaempft);
+}
+
+#ende .beschreibung {
+  margin-bottom: 8px;
+}
+
+.rangliste {
+  margin-bottom: 12px;
+  padding: 0;
+  overflow: hidden;
+  list-style: none;
+  text-align: left;
+  background: var(--flaeche);
+  border: 1px solid var(--linie);
+  border-radius: 16px;
+}
+
+.rangliste li {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 18px;
+}
+
+.rangliste li + li {
+  border-top: 1px solid rgba(214, 182, 118, 0.1);
+}
+
+.rangliste .rang {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  color: var(--gedaempft);
+}
+
+.rangliste li:nth-child(-n + 3) .rang {
+  color: var(--gold);
+}
+
+.rangliste .name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rangliste .zahl {
+  font-variant-numeric: tabular-nums;
+  color: var(--gold-hell);
+}
+
+.rangliste li.eigener {
+  background: rgba(214, 182, 118, 0.13);
+}
+
+.rangliste li.leer {
+  display: block;
+  text-align: center;
+  color: var(--gedaempft);
+}
+
+#rangliste .knopf {
+  width: 100%;
+}
+
