@@ -307,3 +307,30 @@ function aktualisiereTippKnopf() {
   el.tippKnopf.disabled = tippStufe >= 2;
 }
 
+// ===================== Anzeige =====================
+function aktualisiereAnzeige() {
+  el.punkte.textContent = punkte;
+  el.serie.textContent = serie;
+}
+
+function zeigeMeldung(text, art) {
+  el.meldung.textContent = text;
+  el.meldung.className = "meldung " + art;
+}
+
+// ===================== Timer =====================
+function starteTimer() {
+  endZeit = Date.now() + SPIEL_DAUER * 1000;
+  clearInterval(timerId);
+  timerId = setInterval(tick, 100);
+  tick();
+}
+
+function tick() {
+  const rest = Math.max(0, endZeit - Date.now());
+  el.zeit.textContent = Math.ceil(rest / 1000);
+  el.zeitBalken.style.transform = "scaleX(" + rest / (SPIEL_DAUER * 1000) + ")";
+  el.zeitBox.classList.toggle("knapp", rest <= 10000);
+  if (rest <= 0) beendeSpiel();
+}
+
