@@ -334,3 +334,89 @@ function tick() {
   if (rest <= 0) beendeSpiel();
 }
 
+// ===================== Spielende =====================
+async function beendeSpiel() {
+  clearInterval(timerId);
+  spielLaeuft = false;
+  gesperrt = true;
+
+  el.endPunkte.textContent = punkte;
+  zeigeEndDetails();
+  zeigeBildschirm("ende");
+
+  if (modus === "frei") {
+    el.endHinweis.textContent = t("freiHinweis");
+    el.endBereich.hidden = true;
+    return;
+  }
+
+  el.endHinweis.textContent = "";
+  el.endBereich.hidden = false;
+  zeigeListenText(el.endListe, t("laden"));
+  try {
+    await Rangliste.speichern(spielerName, punkte);
+  } catch (fehler) {
+    console.error(fehler);
+    el.endHinweis.textContent = t("speichernFehler");
+  }
+  await zeigeRangliste(el.endListe, { name: spielerName, punkte: punkte });
+}
+
+function zeigeEndDetails() {
+  el.endDetails.textContent = t("details")
+    .replace("{richtig}", anzahlRichtig)
+    .replace("{serie}", besteSerie);
+}
+
+// ===================== Rangliste anzeigen =====================
+async function zeigeRangliste(liste, eigenerEintrag) {
+  zeigeListenText(liste, t("laden"));
+
+  let eintraege;
+  try {
+    eintraege = await Rangliste.laden();
+  } catch (fehler) {
+    console.error(fehler);
+    zeigeListenText(liste, t("ranglisteFehler"));
+    return;
+  }
+
+  if (eintraege.length === 0) {
+    zeigeListenText(liste, t("keineEintraege"));
+    return;
+  }
+
+  let markiert = false;
+  const zeilen = eintraege.map(function (eintrag, index) {
+    const zeile = document.createElement("li");
+    // Den eigenen Eintrag hervorheben
+    if (!markiert && eigenerEintrag
+        && eintrag.name === eigenerEintrag.name && eintrag.punkte === eigenerEintrag.punkte) {
+      zeile.classList.add("eigener");
+      markiert = true;
+    }
+    // textContent statt innerHTML: So kann niemand mit seinem Namen Code einschleusen
+    zeile.append(
+      teil("rang", index + 1),
+      teil("name", eintrag.name),
+      teil("zahl", eintrag.punkte)
+    );
+    return zeile;
+  });
+  liste.replaceChildren(...zeilen);
+}
+
+function teil(klasse, inhalt) {
+  const span = document.createElement("span");
+  span.className = klasse;
+  span.textContent = inhalt;
+  return span;
+}
+
+function zeigeListenText(liste, text) {
+  const zeile = document.createElement("li");
+  zeile.className = "leer";
+  zeile.textContent = text;
+  liste.replaceChildren(zeile);
+}
+
