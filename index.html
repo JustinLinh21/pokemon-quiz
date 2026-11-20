@@ -4,27 +4,102 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wer ist das Pokémon?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <main class="app">
 
-  <h1>Wer ist das Pokémon?</h1>
+    <!-- Kopfzeile mit Sprachwahl -->
+    <header class="kopf">
+      <span class="marke">Silhouette</span>
+      <div class="sprache" role="group" aria-label="Sprache / Language">
+        <button type="button" data-sprache="de">DE</button>
+        <button type="button" data-sprache="en">EN</button>
+      </div>
+    </header>
 
-  <!-- Hier kommt das Bild vom Pokémon rein (am Anfang schwarz) -->
-  <img id="pokemon-bild" class="silhouette" src="" alt="Pokémon">
+    <!-- 1. Startbildschirm -->
+    <section id="start" class="bildschirm aktiv">
+      <p class="ueberschrift-klein" data-text="untertitel"></p>
+      <h1 data-text="titel"></h1>
+      <div class="trenner"></div>
+      <p class="beschreibung" data-text="beschreibung"></p>
 
-  <!-- Hier tippt der Spieler seinen Tipp ein -->
-  <div>
-    <input id="tipp-feld" type="text" placeholder="Name eintippen...">
-    <button id="raten-knopf">Raten!</button>
-  </div>
+      <div class="karte">
+        <label for="spieler-name" data-text="nameLabel"></label>
+        <input id="spieler-name" type="text" maxlength="20" autocomplete="off" data-platzhalter="namePlatzhalter">
+        <p id="start-fehler" class="fehlertext" aria-live="polite"></p>
+        <button type="button" id="start-rangliste" class="knopf gold" data-text="startRangliste"></button>
+        <button type="button" id="start-frei" class="knopf rand" data-text="startFrei"></button>
+      </div>
 
-  <!-- Hier zeigen wir an, ob es richtig oder falsch war -->
-  <p id="ergebnis"></p>
+      <button type="button" id="zeige-rangliste" class="link" data-text="ranglisteAnzeigen"></button>
+    </section>
 
-  <!-- Knopf um ein neues Pokémon zu laden -->
-  <button id="neu-knopf">Neues Pokémon</button>
+    <!-- 2. Spielbildschirm -->
+    <section id="spiel" class="bildschirm">
+      <div class="anzeige">
+        <div class="wert"><span data-text="punkte"></span><strong id="punkte">0</strong></div>
+        <div class="wert"><span data-text="serie"></span><strong id="serie">0</strong></div>
+        <div class="wert" id="zeit-box"><span data-text="zeit"></span><strong id="zeit">60</strong></div>
+      </div>
+      <div class="zeitbalken"><div id="zeitbalken-fuellung"></div></div>
 
+      <div class="buehne">
+        <img id="pokemon-bild" alt="">
+      </div>
+
+      <p id="meldung" class="meldung" aria-live="polite"></p>
+      <p id="tipp-text" class="tipp-text"></p>
+
+      <form id="rate-formular" class="rate-zeile">
+        <input id="tipp-feld" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" data-platzhalter="tippPlatzhalter">
+        <button type="submit" class="knopf gold" data-text="raten"></button>
+      </form>
+
+      <div class="neben-knoepfe">
+        <button type="button" id="tipp-knopf" class="knopf rand klein"></button>
+        <button type="button" id="ueberspringen-knopf" class="knopf rand klein" data-text="ueberspringen"></button>
+      </div>
+    </section>
+
+    <!-- 3. Ende eines Spiels -->
+    <section id="ende" class="bildschirm">
+      <p class="ueberschrift-klein" data-text="zeitAbgelaufen"></p>
+      <div id="end-punkte" class="end-punkte">0</div>
+      <p class="end-einheit" data-text="punkteEinheit"></p>
+      <p id="end-details" class="beschreibung"></p>
+      <p id="end-hinweis" class="hinweis"></p>
+
+      <div id="end-rangliste-bereich">
+        <h3 data-text="rangliste"></h3>
+        <ol id="end-rangliste" class="rangliste"></ol>
+        <p class="rangliste-info"></p>
+      </div>
+
+      <div class="knopf-reihe">
+        <button type="button" id="nochmal" class="knopf gold" data-text="nochmal"></button>
+        <button type="button" id="zum-start" class="knopf rand" data-text="zumStart"></button>
+      </div>
+    </section>
+
+    <!-- 4. Rangliste ansehen -->
+    <section id="rangliste" class="bildschirm">
+      <p class="ueberschrift-klein" data-text="bestenliste"></p>
+      <h2 data-text="rangliste"></h2>
+      <ol id="rangliste-liste" class="rangliste"></ol>
+      <p class="rangliste-info"></p>
+      <button type="button" id="rangliste-zurueck" class="knopf rand" data-text="zurueck"></button>
+    </section>
+
+  </main>
+
+  <script src="config.js"></script>
+  <script src="texte.js"></script>
+  <script src="rangliste.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
