@@ -420,3 +420,35 @@ function zeigeListenText(liste, text) {
   liste.replaceChildren(zeile);
 }
 
+// ===================== Knöpfe verbinden =====================
+document.querySelectorAll("[data-sprache]").forEach(function (knopf) {
+  knopf.addEventListener("click", function () { setzeSprache(knopf.dataset.sprache); });
+});
+
+document.getElementById("start-rangliste").addEventListener("click", function () { starteSpiel("rangliste"); });
+document.getElementById("start-frei").addEventListener("click", function () { starteSpiel("frei"); });
+el.name.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") starteSpiel("rangliste");
+});
+
+el.formular.addEventListener("submit", pruefeTipp);
+el.tippKnopf.addEventListener("click", gibTipp);
+el.ueberspringen.addEventListener("click", ueberspringe);
+
+document.getElementById("nochmal").addEventListener("click", function () { starteSpiel(modus); });
+document.getElementById("zum-start").addEventListener("click", function () { zeigeBildschirm("start"); });
+
+document.getElementById("zeige-rangliste").addEventListener("click", function () {
+  zeigeBildschirm("rangliste");
+  zeigeRangliste(el.ranglisteListe, null);
+});
+document.getElementById("rangliste-zurueck").addEventListener("click", function () { zeigeBildschirm("start"); });
+
+// ===================== Start =====================
+// Hinweis unter der Rangliste: online oder nur lokal?
+document.querySelectorAll(".rangliste-info").forEach(function (element) {
+  element.dataset.text = Rangliste.online ? "ranglisteOnline" : "ranglisteLokal";
+});
+
+el.name.value = ladeEinstellung("name") || "";
+setzeSprache(ladeEinstellung("sprache") || "de");
