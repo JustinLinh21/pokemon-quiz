@@ -10,11 +10,17 @@
 
   <h1>Wer ist das Pokémon?</h1>
 
-  <!-- Hier kommt das Bild vom Pokémon rein -->
-  <img id="pokemon-bild" src="" alt="Pokémon">
+  <!-- Hier kommt das Bild vom Pokémon rein (am Anfang schwarz) -->
+  <img id="pokemon-bild" class="silhouette" src="" alt="Pokémon">
 
-  <!-- Hier zeigen wir den Namen an -->
-  <p id="pokemon-name"></p>
+  <!-- Hier tippt der Spieler seinen Tipp ein -->
+  <div>
+    <input id="tipp-feld" type="text" placeholder="Name eintippen...">
+    <button id="raten-knopf">Raten!</button>
+  </div>
+
+  <!-- Hier zeigen wir an, ob es richtig oder falsch war -->
+  <p id="ergebnis"></p>
 
   <!-- Knopf um ein neues Pokémon zu laden -->
   <button id="neu-knopf">Neues Pokémon</button>

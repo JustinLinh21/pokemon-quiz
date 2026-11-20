@@ -9,6 +9,21 @@ body {
   height: 250px;
 }
 
+/* Macht das Bild komplett schwarz = Silhouette */
+.silhouette {
+  filter: brightness(0);
+}
+
+input {
+  font-size: 18px;
+  padding: 10px;
+}
+
+#ergebnis {
+  font-size: 22px;
+  font-weight: bold;
+}
+
 button {
   font-size: 18px;
   padding: 10px 20px;
