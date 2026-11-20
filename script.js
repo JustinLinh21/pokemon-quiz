@@ -1,68 +1,76 @@
-// 1. Wir holen uns die Elemente aus dem HTML, damit wir sie ändern können
-const bild = document.getElementById("pokemon-bild");
-const tippFeld = document.getElementById("tipp-feld");
-const ratenKnopf = document.getElementById("raten-knopf");
-const ergebnis = document.getElementById("ergebnis");
-const neuKnopf = document.getElementById("neu-knopf");
+// ===================== Einstellungen =====================
+const SPIEL_DAUER = 60;                  // Sekunden pro Spiel
+const ANZAHL_POKEMON = 151;              // 1. Generation
+const PUNKTE_JE_TIPPS = [100, 70, 40];   // ohne Tipp, mit 1 Tipp, mit 2 Tipps
+const SERIEN_BONUS = 10;                 // Extrapunkte pro Treffer in Folge
+const MAX_SERIEN_BONUS = 50;
+const PAUSE_NACH_RUNDE = 1100;           // Millisekunden, bevor das nächste kommt
 
-// Hier merken wir uns den richtigen Namen (am Anfang leer)
-let richtigerName = "";
+// ===================== Elemente aus dem HTML =====================
+const el = {
+  name: document.getElementById("spieler-name"),
+  startFehler: document.getElementById("start-fehler"),
+  punkte: document.getElementById("punkte"),
+  serie: document.getElementById("serie"),
+  zeit: document.getElementById("zeit"),
+  zeitBox: document.getElementById("zeit-box"),
+  zeitBalken: document.getElementById("zeitbalken-fuellung"),
+  bild: document.getElementById("pokemon-bild"),
+  meldung: document.getElementById("meldung"),
+  tippText: document.getElementById("tipp-text"),
+  formular: document.getElementById("rate-formular"),
+  tippFeld: document.getElementById("tipp-feld"),
+  tippKnopf: document.getElementById("tipp-knopf"),
+  ueberspringen: document.getElementById("ueberspringen-knopf"),
+  endPunkte: document.getElementById("end-punkte"),
+  endDetails: document.getElementById("end-details"),
+  endHinweis: document.getElementById("end-hinweis"),
+  endBereich: document.getElementById("end-rangliste-bereich"),
+  endListe: document.getElementById("end-rangliste"),
+  ranglisteListe: document.getElementById("rangliste-liste")
+};
 
-// 2. Diese Funktion lädt ein zufälliges Pokémon von der API
-async function ladePokemon() {
-  // Zufällige Zahl zwischen 1 und 151 (die erste Generation)
-  const id = Math.floor(Math.random() * 151) + 1;
+// ===================== Spielzustand =====================
+let sprache = "de";
+let modus = "frei";            // "frei" oder "rangliste"
+let spielerName = "";
+let punkte = 0;
+let serie = 0;
+let besteSerie = 0;
+let anzahlRichtig = 0;
+let tippStufe = 0;             // 0, 1 oder 2 Tipps benutzt
+let spielLaeuft = false;
+let gesperrt = true;           // true = gerade keine Eingabe möglich
+let endZeit = 0;
+let timerId = null;
+let aktuelles = null;          // Das Pokémon, das man gerade errät
+let naechstes = null;          // Das nächste wird schon im Voraus geladen
+let gesehen = new Set();       // Damit nicht dasselbe zweimal kommt
 
-  // Anfrage an die API schicken und auf die Antwort warten
-  const antwort = await fetch("https://pokeapi.co/api/v2/pokemon/" + id);
-  const daten = await antwort.json();
+// ===================== Hilfsfunktionen =====================
 
-  // Zweiter API-Aufruf: Hier stehen die Namen in allen Sprachen
-  const speziesAntwort = await fetch("https://pokeapi.co/api/v2/pokemon-species/" + id);
-  const speziesDaten = await speziesAntwort.json();
+// Text in der aktuellen Sprache holen
+function t(schluessel) {
+  return TEXTE[sprache][schluessel];
+}
 
-  // Den Eintrag mit der Sprache "de" (Deutsch) suchen
-  const deutsch = speziesDaten.names.find(function (eintrag) {
-    return eintrag.language.name === "de";
+function warte(ms) {
+  return new Promise(function (fertig) { setTimeout(fertig, ms); });
+}
+
+// Macht Namen vergleichbar: "Mr. Mime" → "mrmime", "Flabébé" → "flabebe"
+function normalisiere(text) {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9]/g, "");
+}
+
+// Nur einen Bildschirm anzeigen
+function zeigeBildschirm(id) {
+  document.querySelectorAll(".bildschirm").forEach(function (b) {
+    b.classList.toggle("aktiv", b.id === id);
   });
-
-  // Den deutschen Namen merken (aber noch NICHT anzeigen!)
-  richtigerName = deutsch.name.toLowerCase();
-
-  // Bild anzeigen und wieder schwarz machen
-  bild.src = daten.sprites.other["official-artwork"].front_default;
-  bild.classList.add("silhouette");
-
-  // Alles zurücksetzen für die neue Runde
-  tippFeld.value = "";
-  ergebnis.textContent = "";
 }
 
-// 3. Diese Funktion prüft, ob der Tipp richtig ist
-function pruefeTipp() {
-  // Was hat der Spieler eingetippt? (klein geschrieben, ohne Leerzeichen)
-  const tipp = tippFeld.value.toLowerCase().trim();
-
-  if (tipp === richtigerName) {
-    // Ersten Buchstaben gross schreiben: "glurak" → "Glurak"
-    const schoenerName = richtigerName.charAt(0).toUpperCase() + richtigerName.slice(1);
-    ergebnis.textContent = "✅ Richtig! Es ist " + schoenerName + "!";
-    bild.classList.remove("silhouette"); // Farbe zeigen
-  } else {
-    ergebnis.textContent = "❌ Leider falsch, versuch's nochmal!";
-  }
-}
-
-// 4. Knöpfe mit den Funktionen verbinden
-ratenKnopf.addEventListener("click", pruefeTipp);
-neuKnopf.addEventListener("click", ladePokemon);
-
-// Bonus: Mit der Enter-Taste raten
-tippFeld.addEventListener("keydown", function (event) {
-  if (event.key === "Enter") {
-    pruefeTipp();
-  }
-});
-
-// 5. Beim Start der Seite direkt ein Pokémon laden
-ladePokemon();
