@@ -490,3 +490,13 @@ input::placeholder {
   width: 100%;
 }
 
+/* ===== Handy ===== */
+@media (max-width: 420px) {
+  .rate-zeile {
+    flex-direction: column;
+  }
+
+  .karte {
+    padding: 24px 18px;
+  }
+}
